@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Asegúrate de que esté importado
+const cors = require('cors'); 
 
 const app = express();
 const PORT = 3000;
@@ -20,7 +20,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', () => console.log('Conectado a MongoDB'));
 
-// Definir el esquema y modelo
+
 const productoSchema = new mongoose.Schema({
   nombre: String,
   precio: Number,
@@ -29,10 +29,9 @@ const productoSchema = new mongoose.Schema({
 
 const Producto = mongoose.model('Producto', productoSchema);
 
-// 📌 🔹 **Nueva Ruta para listar los endpoints**
 app.get('/routes', (req, res) => {
   const routes = app._router.stack
-    .filter(layer => layer.route) // Filtra solo rutas definidas
+    .filter(layer => layer.route)
     .map(layer => ({
       method: Object.keys(layer.route.methods)[0].toUpperCase(),
       path: layer.route.path
@@ -41,7 +40,7 @@ app.get('/routes', (req, res) => {
   res.json(routes);
 });
 
-// Rutas CRUD
+
 app.get('/productos', async (req, res) => {
   try {
     const productos = await Producto.find();
