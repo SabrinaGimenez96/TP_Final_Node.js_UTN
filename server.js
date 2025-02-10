@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Asegúrate de que esté importado
 
 const app = express();
 const PORT = 3000;
@@ -13,8 +14,7 @@ app.use(cors());
 mongoose.connect('mongodb+srv://gimenezsabrina244:yYgeukFTSpc4ErjP@cluster0.ins8x.mongodb.net/sample_mflix?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  });
-  
+});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
@@ -28,6 +28,18 @@ const productoSchema = new mongoose.Schema({
 });
 
 const Producto = mongoose.model('Producto', productoSchema);
+
+// 📌 🔹 **Nueva Ruta para listar los endpoints**
+app.get('/routes', (req, res) => {
+  const routes = app._router.stack
+    .filter(layer => layer.route) // Filtra solo rutas definidas
+    .map(layer => ({
+      method: Object.keys(layer.route.methods)[0].toUpperCase(),
+      path: layer.route.path
+    }));
+
+  res.json(routes);
+});
 
 // Rutas CRUD
 app.get('/productos', async (req, res) => {
